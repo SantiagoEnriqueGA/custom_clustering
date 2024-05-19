@@ -5,14 +5,15 @@ This project is primarily educational. It is designed to help understand the wor
 
 ---
 
-### KMeans.py
+### clustering.py
 
-This is a custom implementation of the KMeans clustering algorithm along with additional functionalities for evaluating the optimal number of clusters and visualizing the clustering results.
+This module contains custom implementations of the KMeans and DBSCAN clustering algorithms, along with additional functionalities for evaluating clustering performance and visualizing the clustering results.
 
 **Classes:**
 - KMeans: A class implementing KMeans clustering with methods for fitting the model, predicting cluster labels, and finding the optimal number of clusters.
+- DBSCAN: A class implementing the Density-Based Spatial Clustering of Applications with Noise (DBSCAN) algorithm.
 
-**Methods:**
+**Methods (KMeans):**
 - `__init__`: Initializes the KMeans object with parameters such as the data matrix, number of clusters, maximum iterations, and convergence tolerance.
 - `fit`: Fits the KMeans model to the data by iteratively updating centroids and cluster assignments until convergence.
 - `predict`: Predicts the cluster labels for new data points based on the fitted centroids.
@@ -26,6 +27,16 @@ This is a custom implementation of the KMeans clustering algorithm along with ad
 - `update_centroids`: Updates centroids based on the current cluster assignments.
 - `_handle_categorical`: Handles categorical columns in the input data by one-hot encoding.
 - `_convert_to_ndarray`: Converts input data to a NumPy ndarray and handles categorical columns.
+
+**Methods (DBSCAN):**
+- `__init__`: Initializes the DBSCAN object with the input parameters.
+- `fit`: Fits the DBSCAN model to the data and assigns cluster labels.
+- `predict`: Predicts the cluster labels for new data points.
+- `fit_predict`: Fits the DBSCAN model and returns cluster labels.
+- `silhouette_score`: Calculates the Silhouette Score for evaluating clustering performance.
+- `_handle_categorical`: Handles categorical columns by one-hot encoding.
+- `_convert_to_ndarray`: Converts input data to a NumPy ndarray and handles categorical columns.
+- `_custom_distance_matrix`: Calculates the pairwise distance matrix using a custom distance calculation method.
 
 #### Additional Information on Evaluation Metrics:
 
@@ -103,9 +114,9 @@ This notebook performs customer segmentation analysis using the Mall Customers d
 
 ---
 
-### KMeans_exampleUsage.ipynb
+### clustering_exampleUsage.ipynb
 
-This notebook demonstrates an example usage of the custom KMeans clustering algorithm on synthetic data generated using `make_blobs` from `sklearn.datasets`. It showcases how to find the optimal number of clusters and visualize the clustering results.
+This notebook demonstrates an example usage of the custom KMeans clustering, and DBSCAN algorithms on synthetic data generated using `make_blobs` from `sklearn.datasets`. It showcases how to find the optimal number of clusters and visualize the clustering results.
 
 ---
 
