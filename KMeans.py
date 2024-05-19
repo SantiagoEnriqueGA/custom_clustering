@@ -1,3 +1,31 @@
+"""
+This is a custom implementation of the KMeans clustering algorithm along with additional functionalities for evaluating the optimal number of clusters and visualizing the clustering results.
+
+Classes:
+- KMeans: A class implementing KMeans clustering with methods for fitting the model, predicting cluster labels, and finding the optimal number of clusters.
+
+Methods:
+- __init__: Initializes the KMeans object with parameters such as the data matrix, number of clusters, maximum iterations, and convergence tolerance.
+- fit: Fits the KMeans model to the data by iteratively updating centroids and cluster assignments until convergence.
+- predict: Predicts the cluster labels for new data points based on the fitted centroids.
+- find_optimal_clusters: Implements methods to find the optimal number of clusters using the elbow method, Calinski-Harabasz Index, Davies-Bouldin Index, and Silhouette Score. It also plots the evaluation metrics to aid in determining the optimal k value.
+- calinski_harabasz_index: Calculates the Calinski-Harabasz Index for evaluating clustering performance.
+- davies_bouldin_index: Calculates the Davies-Bouldin Index for evaluating clustering performance.
+- silhouette_score: Calculates the Silhouette Score for evaluating clustering performance.
+- elbow_method: Implements the elbow method to determine the optimal number of clusters.
+- initialize_centroids: Randomly initializes the centroids for KMeans clustering.
+- assign_clusters: Assigns clusters based on the nearest centroid.
+- update_centroids: Updates centroids based on the current cluster assignments.
+- _handle_categorical: Handles categorical columns in the input data by one-hot encoding.
+- _convert_to_ndarray: Converts input data to a NumPy ndarray and handles categorical columns.
+
+Usage Example:
+- Load data, initialize KMeans object, and find the optimal number of clusters using various evaluation metrics.
+- Fit the KMeans model with the optimal number of clusters and visualize the clustering results.
+
+Note: Includes example usage at the end to demonstrate how to use the KMeans class and its functionalities.
+"""
+
 import numpy as np
 
 class KMeans:
