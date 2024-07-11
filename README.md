@@ -54,6 +54,19 @@ This module contains custom implementations of the KMeans and DBSCAN clustering 
 
 These metrics are used to evaluate clustering performance and determine the optimal number of clusters for a given dataset.
 
+### Examples:
+
+#### Visualized Example:
+
+**KMeans Evaluation Methods**  
+![alt text](https://raw.githubusercontent.com/SantiagoEnriqueGA/custom_clustering/main/vis/KMeans_eval.png)
+
+**KMeans Labeled vs True**  
+![alt text](https://raw.githubusercontent.com/SantiagoEnriqueGA/custom_clustering/main/vis/KMeans_blobs.png)  
+
+**DBSCAN Labeled vs Noise**  
+![alt text](https://raw.githubusercontent.com/SantiagoEnriqueGA/custom_clustering/main/vis/DBSCAN_blobs.png)
+
 **Usage Example:**
 ```python
 # Example usage:
