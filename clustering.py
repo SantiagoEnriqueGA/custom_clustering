@@ -638,107 +638,180 @@ class DBSCAN:
         
         return silhouette_score
     
+    def auto_eps(self, min = 0.1, max = 1.1, precision = 0.01, verbose=False):
+        """
+        Find the optimal eps value for DBSCAN based on silhouette score.
+
+        Parameters:
+        - min_samples: The minimum number of samples in a neighborhood for a point to be considered as a core point.
+        - verbose: Whether to print the silhouette score for each eps value.
+
+        Returns:
+        - eps: The optimal eps value.
+        """
+        
+        best_eps = 0.1
+        best_score = -1
+        step = 0.1
+
+        # Iterate over different eps values with decreasing step size based on precision
+        while step >= precision:
+            for eps in np.arange(min, max, step):
+                self.eps = eps
+                self.fit()
+                score = self.silhouette_score()
+                if verbose:print(f'eps: {eps:.3f}, score: {score:.4f}')
+                if score > best_score:
+                    if verbose: print(f'\tNew best score: {score:.4f}')
+                    best_score = score
+                    best_eps = eps
+            min = best_eps - step
+            max = best_eps + step
+            step /= 10
 
 
-# # Example usage:
-# ------------------------
-# DBSCAN
-# ------------------------
-# from sklearn.datasets import make_blobs
-# import matplotlib.pyplot as plt
-# import numpy as np
+        self.eps = best_eps
+        return best_eps
 
-# # Generate synthetic data for testing
-# true_k = 8
-# X, y = make_blobs(n_samples=1000, n_features=2, centers=true_k, cluster_std=0.60, random_state=1)
+       
+    
+def DBSCANEx2():
+    # Example usage:
+    # ------------------------
+    # DBSCAN
+    # ------------------------
+    from sklearn.datasets import make_blobs
 
-# # Initialize DBSCAN object
-# eps = 0.5
-# min_samples = 10
-# dbscan = DBSCAN(X, eps=eps, min_samples=min_samples)
+    # Generate synthetic data for testing
+    true_k = 8
+    X, y = make_blobs(n_samples=1000, n_features=2, centers=true_k, cluster_std=0.60, random_state=1)
 
-# # Fit the DBSCAN model to the data
-# labels = dbscan.fit_predict()
+    # Initialize DBSCAN object
+    eps = 0.5
+    min_samples = 10
+    dbscan = DBSCAN(X, eps=eps, min_samples=min_samples)
 
-# # Calculate the silhouette score for evaluation
-# silhouette_score = dbscan.silhouette_score()
-# print(f'Silhouette Score: {silhouette_score}')
+    # Fit the DBSCAN model to the data
+    labels = dbscan.fit_predict()
 
-# # Plot the DBSCAN results
-# plt.figure(figsize=(8, 8))
-
-# # Scatter plot of the data points colored by their cluster label
-# plt.scatter(X[:, 0], X[:, 1], c=labels, s=50, cmap='viridis')
-# plt.title(f'DBSCAN Clustering (eps={eps}, min_samples={min_samples})')
-# plt.xlabel('Feature 1')
-# plt.ylabel('Feature 2')
-
-# # Plotting core points and noise points
-# core_samples_mask = np.zeros_like(labels, dtype=bool)
-# core_samples_mask[dbscan.labels != -1] = True
-
-# # Plot core points
-# core_points = X[core_samples_mask]
-# plt.scatter(core_points[:, 0], core_points[:, 1], c=labels[core_samples_mask], s=50, cmap='viridis', edgecolors='k')
-
-# # Plot noise points
-# noise_points = X[~core_samples_mask]
-# plt.scatter(noise_points[:, 0], noise_points[:, 1], c='red', s=50, label='Noise')
-
-# plt.legend()
-# plt.show()
+    # Calculate the silhouette score for evaluation
+    silhouette_score = dbscan.silhouette_score()
+    print(f'Silhouette Score BASE: {silhouette_score}')
+    
+    # AUTO EPS
+    best_eps = dbscan.auto_eps(precision=0.01,verbose=True)
+    print(f'Best eps: {best_eps}')
+    dbscan = DBSCAN(X, eps=best_eps, min_samples=min_samples)
+    labels = dbscan.fit_predict()
+    silhouette_score = dbscan.silhouette_score()
+    print(f'Silhouette Score AUTO: {silhouette_score}')
 
 
+def DBSCANE():
+    # ------------------------
+    # DBSCAN
+    # ------------------------
+    from sklearn.datasets import make_blobs
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    # Generate synthetic data for testing
+    true_k = 8
+    X, y = make_blobs(n_samples=1000, n_features=2, centers=true_k, cluster_std=0.60, random_state=1)
+
+    # Initialize DBSCAN object
+    eps = 0.5
+    min_samples = 10
+    dbscan = DBSCAN(X, eps=eps, min_samples=min_samples)
+
+    # Fit the DBSCAN model to the data
+    labels = dbscan.fit_predict()
+
+    # Calculate the silhouette score for evaluation
+    silhouette_score = dbscan.silhouette_score()
+    print(f'Silhouette Score: {silhouette_score}')
+
+    # Plot the DBSCAN results
+    plt.figure(figsize=(8, 8))
+
+    # Scatter plot of the data points colored by their cluster label
+    plt.scatter(X[:, 0], X[:, 1], c=labels, s=50, cmap='viridis')
+    plt.title(f'DBSCAN Clustering (eps={eps}, min_samples={min_samples})')
+    plt.xlabel('Feature 1')
+    plt.ylabel('Feature 2')
+
+    # Plotting core points and noise points
+    core_samples_mask = np.zeros_like(labels, dtype=bool)
+    core_samples_mask[dbscan.labels != -1] = True
+
+    # Plot core points
+    core_points = X[core_samples_mask]
+    plt.scatter(core_points[:, 0], core_points[:, 1], c=labels[core_samples_mask], s=50, cmap='viridis', edgecolors='k')
+
+    # Plot noise points
+    noise_points = X[~core_samples_mask]
+    plt.scatter(noise_points[:, 0], noise_points[:, 1], c='red', s=50, label='Noise')
+
+    plt.legend()
+    plt.show()
 
 
-# # Example usage:
-# ------------------------
-# KMeans
-# ------------------------
-# from sklearn.datasets import make_blobs
-# import matplotlib.pyplot as plt
 
-# true_k = 8
-# # Generate synthetic data for testing
-# X, y = make_blobs(n_samples=1000, n_features=2, centers=true_k, cluster_std=0.60, random_state=1)
+def KMeansEx():
+    # ------------------------
+    # KMeans
+    # ------------------------
+    from sklearn.datasets import make_blobs
+    import matplotlib.pyplot as plt
 
-# # Initialize KMeans object
-# kmeans = KMeans(X)
+    true_k = 8
+    # Generate synthetic data for testing
+    X, y = make_blobs(n_samples=1000, n_features=2, centers=true_k, cluster_std=0.60, random_state=1)
 
-# # Find the optimal number of clusters using the elbow method
-# ch_optimal_k, db_optimal_k, silhouette_optimal_k = kmeans.find_optimal_clusters(max_k=10, true_k=true_k)
+    # Initialize KMeans object
+    kmeans = KMeans(X)
 
-# print(f'calinski_harabasz_index number of clusters: {ch_optimal_k}')
-# print(f'davies_bouldin_index number of clusters: {db_optimal_k}')
-# print(f'silhouette_score number of clusters: {silhouette_optimal_k}')
+    # Find the optimal number of clusters using the elbow method
+    ch_optimal_k, db_optimal_k, silhouette_optimal_k = kmeans.find_optimal_clusters(max_k=10, true_k=true_k)
 
-# # Create a 2x2 subplot for each k value
-# fig, axs = plt.subplots(2, 2, figsize=(8, 8))
+    print(f'calinski_harabasz_index number of clusters: {ch_optimal_k}')
+    print(f'davies_bouldin_index number of clusters: {db_optimal_k}')
+    print(f'silhouette_score number of clusters: {silhouette_optimal_k}')
 
-# # Define titles based on which k value method was used
-# titles = [f'True "make_blobs" K = {true_k}', 
-#           f'Calinski-Harabasz Index Optimal K = {ch_optimal_k}', 
-#           f'Davies-Bouldin Index Optimal K = {db_optimal_k}', 
-#           f'Silhouette Optimal K = {silhouette_optimal_k}']
+    # Create a 2x2 subplot for each k value
+    fig, axs = plt.subplots(2, 2, figsize=(8, 8))
 
-# # Loop through each k value and plot the results of fit()
-# for i, k in enumerate([true_k, ch_optimal_k, db_optimal_k, silhouette_optimal_k]):
-#     # Fit the KMeans model with the current k value
-#     kmeans.n_clusters = k
-#     kmeans.fit()
+    # Define titles based on which k value method was used
+    titles = [f'True "make_blobs" K = {true_k}', 
+              f'Calinski-Harabasz Index Optimal K = {ch_optimal_k}', 
+              f'Davies-Bouldin Index Optimal K = {db_optimal_k}', 
+              f'Silhouette Optimal K = {silhouette_optimal_k}']
 
-#     # Predict cluster labels
-#     labels = kmeans.predict(X)
+    # Loop through each k value and plot the results of fit()
+    for i, k in enumerate([true_k, ch_optimal_k, db_optimal_k, silhouette_optimal_k]):
+        # Fit the KMeans model with the current k value
+        kmeans.n_clusters = k
+        kmeans.fit()
 
-#     # Plot the results in the corresponding subplot
-#     row = i // 2
-#     col = i % 2
-#     axs[row, col].scatter(X[:, 0], X[:, 1], c=labels, s=50, cmap='viridis')
-#     centroids = kmeans.centroids
-#     axs[row, col].scatter(centroids[:, 0], centroids[:, 1], c='red', s=100, alpha=0.75)
-#     axs[row, col].set_title(titles[i])
-#     axs[row, col].set_xlabel('Feature 1')
-#     axs[row, col].set_ylabel('Feature 2')
+        # Predict cluster labels
+        labels = kmeans.predict(X)
 
-# plt.tight_layout()
-# plt.show()
+        # Plot the results in the corresponding subplot
+        row = i // 2
+        col = i % 2
+        axs[row, col].scatter(X[:, 0], X[:, 1], c=labels, s=50, cmap='viridis')
+        centroids = kmeans.centroids
+        axs[row, col].scatter(centroids[:, 0], centroids[:, 1], c='red', s=100, alpha=0.75)
+        axs[row, col].set_title(titles[i])
+        axs[row, col].set_xlabel('Feature 1')
+        axs[row, col].set_ylabel('Feature 2')
+
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == "__main__":
+    # KMeansEx()
+    # DBSCANEx()
+    DBSCANEx2()
+    pass
