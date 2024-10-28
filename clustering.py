@@ -638,21 +638,26 @@ class DBSCAN:
         
         return silhouette_score
     
-    def auto_eps(self, min = 0.1, max = 1.1, precision = 0.01, verbose=False):
+    def auto_eps(self, min=0.1, max=1.1, precision=0.01, return_scores=False, verbose=False):
         """
         Find the optimal eps value for DBSCAN based on silhouette score.
 
         Parameters:
-        - min_samples: The minimum number of samples in a neighborhood for a point to be considered as a core point.
+        - min: The minimum eps value to start the search.
+        - max: The maximum eps value to end the search.
+        - precision: The precision of the search.
+        - return_scores: Whether to return a dictionary of (eps, score) pairs.
         - verbose: Whether to print the silhouette score for each eps value.
 
         Returns:
         - eps: The optimal eps value.
+        - scores_dict (optional): A dictionary of (eps, score) pairs if return_scores is True.
         """
         
         best_eps = 0.1
         best_score = -1
         step = 0.1
+        scores_dict = {}
 
         # Iterate over different eps values with decreasing step size based on precision
         while step >= precision:
@@ -660,17 +665,21 @@ class DBSCAN:
                 self.eps = eps
                 self.fit()
                 score = self.silhouette_score()
-                if verbose:print(f'eps: {eps:.3f}, score: {score:.4f}')
+                scores_dict[eps] = score
+                if verbose:
+                    print(f'eps: {eps:.3f}, score: {score:.4f}')
                 if score > best_score:
-                    if verbose: print(f'\tNew best score: {score:.4f}')
+                    if verbose:
+                        print(f'\tNew best score: {score:.4f}')
                     best_score = score
                     best_eps = eps
             min = best_eps - step
             max = best_eps + step
             step /= 10
 
-
         self.eps = best_eps
+        if return_scores:
+            return best_eps, scores_dict
         return best_eps
 
        

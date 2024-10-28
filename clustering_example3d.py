@@ -14,9 +14,9 @@ dbscan = DBSCAN(X, eps=eps, min_samples=min_samples)
 
 
 # Auto Eps
-eps = dbscan.auto_eps(min=0.1, max=2.0, precision=0.01, verbose=True)
-print('Auto Eps:', eps)
-dbscan.eps = eps
+best_eps, scores_dict = dbscan.auto_eps(min=0.1, max=2.0, precision=0.01, verbose=True, return_scores=True)
+print('Auto Eps:', best_eps)
+dbscan.eps = best_eps
 
 # Fit and predict
 labels = dbscan.fit_predict()
