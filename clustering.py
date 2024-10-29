@@ -630,8 +630,12 @@ class DBSCAN:
                 a[i] = 0                                    # Set a(i) to 0 if only one point in the same cluster
             
             # Compute b(i) for each cluster different from point i's cluster
-            b[i] = np.min([np.mean(np.linalg.norm(self.X[other_clusters & (self.labels == label)] - self.X[i], axis=1)) 
-                           for label in set(self.labels) if label != -1 and label != self.labels[i]])
+            other_cluster_distances = [np.mean(np.linalg.norm(self.X[other_clusters & (self.labels == label)] - self.X[i], axis=1)) 
+                                       for label in set(self.labels) if label != -1 and label != self.labels[i]]
+            if other_cluster_distances:
+                b[i] = np.min(other_cluster_distances)
+            else:
+                b[i] = 0
 
         silhouette_scores = (b - a) / np.maximum(a, b)  # Compute silhouette scores for all points
         silhouette_score = np.mean(silhouette_scores)   # Compute mean silhouette score
@@ -665,6 +669,11 @@ class DBSCAN:
                 self.eps = eps
                 self.fit()
                 score = self.silhouette_score()
+                # try:
+                #     score = self.silhouette_score()
+                # except:
+                #     score = float('-inf')    
+                
                 scores_dict[eps] = score
                 if verbose:
                     print(f'eps: {eps:.3f}, score: {score:.4f}')
@@ -822,5 +831,5 @@ def KMeansEx():
 if __name__ == "__main__":
     # KMeansEx()
     # DBSCANEx()
-    DBSCANEx2()
+    # DBSCANEx2()
     pass
